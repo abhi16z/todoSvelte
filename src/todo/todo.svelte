@@ -14,6 +14,11 @@
       return !todo.completed;
     });
   }
+
+  function groupTodo() {
+    todos = todos.sort((a,b) => a.completed - b.completed);
+    console.log('sordting', todos);
+  }
 </script>
 
 <style>
@@ -60,7 +65,7 @@
     <input bind:value={todoDesc} placeholder="Enter todo desc" />
     <button on:click={onAddTodo}>Add Todo</button>
   </div>
-  {#each todos as todo, index}
+  {#each todos as todo, index (todo.creationTime.getTime())}
     <div
       class={todo.completed ? 'todoContainer completed' : 'todoContainer pending'}>
       <label>
@@ -73,6 +78,7 @@
   {#if todos.length > 0}
     <div>
       <button on:click={clearCompleted}>Clear completed</button>
+      <button on:click={groupTodo}>Group Items</button>
     </div>
   {/if}
 </div>
