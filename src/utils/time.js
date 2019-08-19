@@ -1,0 +1,1 @@
+export const getTimeFromStr = str => new Date(str);

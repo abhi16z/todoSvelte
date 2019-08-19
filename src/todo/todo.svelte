@@ -1,9 +1,30 @@
 <script>
+  import { onMount, afterUpdate } from "svelte";
+  import {
+    setLocalStorageData,
+    getLocalStorageData
+  } from "../utils/localstorage";
+  import {getTimeFromStr} from '../utils/time';
+
+  const localStorageKey = "xyz.a16.todosvelte.todo";
+  const setLocalStorage = setLocalStorageData(localStorageKey);
+
   let todos = [];
   let todoDesc = "";
 
+  onMount(() => {
+    const lsData = getLocalStorageData(localStorageKey);
+    if (lsData) {
+      todos = lsData;
+    }
+  });
+
+  afterUpdate(() => console.log('set storage', todos) || setLocalStorage(todos));
+
   function onAddTodo() {
-    if (!todoDesc) { return }
+    if (!todoDesc) {
+      return;
+    }
     const creationTime = new Date();
     todos = [...todos, { creationTime, desc: todoDesc, completed: false }];
     todoDesc = "";
@@ -16,8 +37,8 @@
   }
 
   function groupTodo() {
-    todos = todos.sort((a,b) => a.completed - b.completed);
-    console.log('sordting', todos);
+    todos = todos.sort((a, b) => a.completed - b.completed);
+    console.log("sordting", todos);
   }
 </script>
 
@@ -62,10 +83,10 @@
 
 <div class="todo">
   <div>
-    <input bind:value={todoDesc} placeholder="Enter todo desc" />
+    <input bind:value={todoDesc} placeholder="Enter todo description" />
     <button on:click={onAddTodo}>Add Todo</button>
   </div>
-  {#each todos as todo, index (todo.creationTime.getTime())}
+  {#each todos as todo, index (getTimeFromStr(todo.creationTime))}
     <div
       class={todo.completed ? 'todoContainer completed' : 'todoContainer pending'}>
       <label>
